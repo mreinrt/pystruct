@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.1.0] - 2024-01-XX
+## [1.1.0] - 2026-03-12
 
 ### Added
 - New "Show Groups" checkbox option to display file/directory owner and group information
