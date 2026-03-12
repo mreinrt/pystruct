@@ -14,6 +14,12 @@
 - Status bar with live updates and error reporting.
 - Scrollable, monospace-text view for easy viewing of large directory structures.
 
+![Main Window](media/pystruct.png)
+*Main widget with options*
+
+![Main Window](media/pystruct2.png)
+*Main widget showing permisions*
+
 ---
 
 ## Requirements
