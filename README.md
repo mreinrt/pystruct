@@ -20,6 +20,9 @@
 ![Main Window](media/pystruct2.png)
 *Main widget showing permisions*
 
+![Main Window](media/pystruct3.png)
+*Main widget Ignore Rules*
+
 ---
 
 ## Requirements
