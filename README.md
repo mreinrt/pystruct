@@ -1,27 +1,26 @@
 # GTK Directory Tree Viewer (pystruct)
 
-**pystruct** is a Python-based GTK3 application that allows you to visually browse and generate ASCII-style directory trees. Designed for system administrators, developers, and anyone who wants a clear textual representation of a file hierarchy.
+**pystruct** is a Python GTK3 application for generating, viewing, and copying ASCII-style directory trees. It now includes a file content preview panel, full-width row highlighting, and a classic tree view with `├──`, `└──`, and `│` connectors – perfect for developers, sysadmins, and anyone who needs a quick textual overview of a file hierarchy.
+
+![Main widget with options](media/screenshot.png)
 
 ---
 
 ## Features
 
-- Browse and select directories using a GTK3 file chooser.
-- Generate ASCII directory trees with configurable depth.
-- Option to show or hide hidden files.
-- Switch between dark (hacker-green) and light themes.
-- Copy the generated tree to the clipboard.
-- Status bar with live updates and error reporting.
-- Scrollable, monospace-text view for easy viewing of large directory structures.
-
-![Main Window](media/pystruct.png)
-*Main widget with options*
-
-![Main Window](media/pystruct2.png)
-*Main widget showing permisions*
-
-![Main Window](media/pystruct3.png)
-*Main widget Ignore Rules*
+- **Browse and select directories** via GTK3 file chooser.
+- **ASCII directory tree** with `├──`, `└──`, and `│` connectors in the GUI.
+- **File content preview** – click any file to view its contents in a bottom panel.
+- **Copy selected file content** to clipboard.
+- **Copy entire ASCII tree** to clipboard.
+- **Configurable max depth** (1-10) to limit tree expansion.
+- **Show/hide hidden files** (overrides ignore patterns).
+- **Show permissions** (Unix-style `rwxr-xr-x`) and **show groups** (owner:group).
+- **Ignore rules editor** – edit built-in Python-centric patterns (`.venv/`, `__pycache__/`, etc.) via a dialog.
+- **Full-width row highlighting** using your system's native GTK theme colors.
+- **Resizable split view** – drag the divider to adjust tree vs. preview area size.
+- **Light & dark theme toggle** (hacker-green dark theme included).
+- **Status bar** with real-time feedback and error reporting.
 
 ---
 
@@ -31,11 +30,9 @@
 - PyGObject (GTK3)
 - System GTK3 libraries
 
-### Installing Dependencies
+### Install Dependencies
 
-Use a virtual environment and install PyGObject:
-
-    # Activate your virtual environment first
+    # In a virtual environment
     pip install PyGObject
 
     # System packages (example for Ubuntu/Debian)
@@ -49,76 +46,110 @@ Use a virtual environment and install PyGObject:
 
 ---
 
-## Running the Application
+## Installation & Running
 
-    # Make sure you are in a virtual environment
-    python gtk_directory_tree.py
+    # Clone the repository
+    git clone https://github.com/mreinrt/pystruct.git
+    cd pystruct
 
-- If the script detects that it is not running inside a virtual environment, it will warn you and prompt for confirmation before continuing.
+    # Create virtual environment
+    python -m venv .venv
+    source .venv/bin/activate
+
+    # Install dependencies
+    pip install -r requirements.txt
+
+    # Run
+    python pystruct.py
 
 ---
 
-## Usage
+## Usage Guide
 
-1. **Select a directory**: Use the text entry or click **Browse**.
-2. **Set options**:
-   - Toggle **Show Hidden Files**.
-   - Adjust **Max Depth** to limit tree expansion.
-3. **Generate tree**: Click **Generate Tree**.
-4. **Copy tree**: Click **Copy to Clipboard** to copy ASCII tree text.
-5. **Switch theme**: Click **Switch to Light/Dark Theme**.
+Select a directory using the file chooser.
 
-The status bar will provide feedback, including errors and success messages.
+Configure options:
+- Show Hidden Files
+- Show Permissions
+- Show Groups
+- Max Depth
+
+Generate Tree.
+
+Browse:
+- Click file to preview contents
+- Expand/collapse directories
+
+Copy:
+- Copy Selected File
+- Copy Tree
+
+Edit ignore rules as needed.
 
 ---
 
 ## Key Implementation Details
 
-- Uses `Gtk.TextView` with monospace font for displaying directory trees.
-- CSS-based theming allows a dark hacker-green theme and a light theme.
-- Recursive tree generation stops at `max_depth` to prevent overly deep traversal.
-- Handles permission errors gracefully by displaying `[Permission Denied]`.
-- Clipboard integration allows quick copying of the generated tree.
+- Uses Gtk.TreeView with TreeStore
+- ASCII export preserves connector alignment
+- Multi-encoding file preview with binary handling
+- Recursive ignore rule system
+- Dynamic GTK CSS theming
 
 ---
 
 ## Project Structure
 
-    gtk_directory_tree.py   # Main application script
-
-- All logic is contained in a single Python file for portability.
-- No external configuration files are required.
+    pystruct/
+    ├── pystruct.py
+    ├── requirements.txt
+    ├── CHANGELOG.md
+    ├── LICENSE
+    ├── README.md
+    └── media/
+        ├── screenshot.png
+        ├── tree_view.png
+        ├── file_preview.png
+        └── ignore_rules.png
 
 ---
 
-## Notes
+## Development & Contributing
 
-- Tested on Linux systems with GTK3 support.
-- Virtual environment recommended for dependency isolation.
-- The app is designed for local file browsing; no network file access is implemented.
-- Exception handling included for permission issues, missing directories, and clipboard failures.
+- Fork repository
+- Create branch
+- Commit changes
+- Push and open PR
 
 ---
 
 ## License
 
-MIT License — free to use, modify, and distribute.
+MIT License
 
 ---
 
-## Contact / Support
+## Acknowledgements
 
-For issues or suggestions, please open an issue in the repository or contact the maintainer directly.
+GTK3 / PyGObject  
+Python ecosystem
 
-## About the Dev
+---
 
-OCRCAP was created by BigSlimThic, a hopelessly broke digital low-life who somehow grew up somewhere between Philadelphia and probably South East Asia, surviving on instant noodles and bad Wi-Fi. Rumor has it he has a smoking hot girlfriend, unless she left him for a guy with a real job. Against all odds, he somehow managed to survive the apocalypse of homelessness, poverty, and questionable life choices to create this AI.
+## About the Developer
+
+Created by BigSlimThic – a developer operating across multiple environments with a focus on practical tooling and systems-level usability.
+
+---
 
 ## Donate
 
-Donate to BigSlimThic: Help fund his lifelong quest to buy an ergonomic chair, 
-a better Wi-Fi router, and possibly a vacation somewhere that isn't just his imagination.
+BTC: 3GtCgHhMP7NTxsdNjcDs7TUNSBK6EXoAzz  
+ETH: 0x5f1ed610a96c648478a775644c9244bf4e78631e  
 
-BTC: 3GtCgHhMP7NTxsdNjcDs7TUNSBK6EXoAzz
+---
 
-ETH: 0x5f1ed610a96c648478a775644c9244bf4e78631e
+## Links
+
+Repository: https://github.com/mreinrt/pystruct  
+Issues: https://github.com/mreinrt/pystruct/issues
