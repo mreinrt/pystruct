@@ -1,68 +1,51 @@
 # Changelog
 
-All notable changes to this project are documented in this file.
+All continued notable changes to the **pystruct** project will be documented in this file.
 
-The format is based on https://keepachangelog.com/en/1.0.0/
-and this project loosely follows https://semver.org/spec/v2.0.0.html.
+## [4.0.0] - 2026-05-02
 
----
+### Added
+- **Full cross-platform compatibility** with automatic platform detection system supporting Linux, macOS, and Windows.
+- **Multi-tab support** with traditional browser-style tabs for managing multiple directory views simultaneously.
+- **About dialog** featuring project information, creator story, and cryptocurrency donation addresses (BTC/ETH) with copy functionality.
+- **Refresh button** to reload the current tab's directory tree without changing settings.
+
+### Changed
+- **Platform-specific features** (Permissions/Groups) are automatically disabled on Windows with informative tooltips.
+- **Cross-platform hidden file detection** using appropriate APIs for each operating system (Windows API, macOS BSD flags, Linux dot-files).
+- **Theme-aware tab styling** using CSS that respects system GTK themes across all platforms.
+- **Active tab visual feedback** with bold border using system theme colors (no hardcoded colors).
 
 ## [3.0.0] - 2026-04-27
 
 ### Added
-- Full-width row highlighting in the directory tree using native GTK theme colors.
-- File content preview panel that displays the contents of a selected file.
-- Copy selected file content button to copy file contents directly to the clipboard.
-- Refactored ASCII pipe connectors (`├──`, `└──`, `│`) in the GUI tree view for better visual hierarchy.
-- Persistence of the horizontal divider position for improved layout control.
-- Proper spin button increment/decrement for the Max Depth control (step increment of 1).
+- **File content preview panel** that displays the contents of a selected file.
+- **Copy selected file content** button to copy file contents directly to the clipboard.
+- **Full-width row highlighting** in the directory tree using native GTK theme colors.
+- **Refactored ASCII pipe connectors** (`├──`, `└──`, `│`) in the GUI tree view for better visual hierarchy.
 
 ### Changed
-- Refactored the tree display from `Gtk.TextView` to `Gtk.TreeView` for native selection, full-row highlighting, and improved performance.
-- Updated UI layout using `Gtk.Paned` to separate directory tree (top) and file preview (bottom).
-- Reorganized source code with improved structure, naming, and added docstrings.
-- Disabled TreeView indentation to rely entirely on ASCII prefixes for alignment.
+- Refactored the tree display from `Gtk.TextView` to `Gtk.TreeView` for native selection, full‑row highlighting, and better performance.
+- Improved overall UI layout by splitting the main area into a directory tree (top) and file preview (bottom).
 
 ### Fixed
-- Fixed spin button not responding to `+` / `-` controls for Max Depth.
-- Fixed ASCII tree alignment issues in clipboard output.
-- Resolved GTK warning caused by adding a widget to a container multiple times.
-- Handled `UnicodeDecodeError` when previewing binary files by displaying a message.
-- Corrected ASCII pipe connector alignment.
+- Fixed alignment problems in the generated ASCII tree when copying to the clipboard.
+- Handled `UnicodeDecodeError` gracefully when trying to preview binary files.
 
-### Removed
-- Removed deprecated per-line text-tag highlighting in favor of native TreeView selection.
-
----
-
-## [1.2.0] - 2026-03-15
+## [2.0.0] - 2026-04-20
 
 ### Added
-- New "Ignore Rules" button allowing users to configure file and directory exclusion patterns.
-- Editable ignore rules dialog using `.gitignore`-style glob patterns.
-- Built-in Python project `.gitignore` preset (venv, caches, build artifacts, IDE files, logs, etc.).
+- **Show Hidden Files**, **Show Permissions**, and **Show Groups** options.
+- **Gitignore-style ignore rules editor** for customizing ignore patterns.
+- **Max Depth** spin box to limit tree expansion.
 
 ### Changed
-- Tree generation now respects user-defined ignore patterns.
-- Improved filtering logic allowing both hidden-file filtering and pattern-based ignores simultaneously.
+- Updated default ignore patterns to be more Python-focused (`.venv/`, `__pycache__/`, etc.).
+- Switched from `os.listdir()` to `pathlib.Path.iterdir()` for better cross-platform compatibility.
 
----
-
-## [1.1.0] - 2026-03-12
+## [1.0.0] - 2026-04-15
 
 ### Added
-- New "Show Groups" checkbox option to display file/directory owner and group information.
-- New "Show Permissions" checkbox option to display file/directory permissions in `ls -l` format.
-
-### Changed
-- Improved file/directory sorting: files now appear before directories at each level.
-
----
-
-## [1.0.0] - 2026-02-22
-
-### Added
-- Initial release.
-- GTK3-based directory browser.
-- ASCII tree generation and clipboard copy support.
-- Basic error handling for filesystem access.
+- Initial release with GTK3 directory browser and ASCII tree generation.
+- Browse and select directories using file chooser.
+- Copy generated tree to clipboard.
