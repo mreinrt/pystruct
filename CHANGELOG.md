@@ -1,6 +1,16 @@
 # Changelog
 
 All continued notable changes to the **pystruct** project will be documented in this file.
+## [4.1.0] - 2026-05-05
+
+### Added
+- **WYSIWYG tree copying** – The "Copy Tree" function now respects the current collapse/expand state of directories in the GUI. Collapsed directories show only their name without children, while expanded directories include their full visible subtree.
+
+### Changed
+- Tree copying now uses the GUI expansion state instead of max depth alone, giving you precise control over what gets copied.
+
+### Fixed
+- Copy Tree no longer ignores user's collapse/expand choices when generating ASCII output.
 
 ## [4.0.0] - 2026-05-02
 

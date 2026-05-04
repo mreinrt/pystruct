@@ -673,23 +673,35 @@ class TreeTab:
             self._update_status("No directory selected. Please select a directory first.")
     
     def _tree_to_text(self):
-        """Convert tree store to ASCII text for copying"""
+        """Convert tree store to ASCII text for copying - respects expanded/collapsed state"""
         def iter_to_text(model, iter_pos, prefix="", is_last=True):
             lines = []
             text = model.get_value(iter_pos, 0)
+            
+            # Get current path for this node
+            path = model.get_path(iter_pos)
+            
+            # Check if this node is expanded (has visible children)
+            # We need to check if the tree view has this row expanded
+            is_expanded = self.tree_view.row_expanded(path)
+            
+            # Always add current node
             lines.append(prefix + ("└── " if is_last else "├── ") + text)
             
-            new_prefix = prefix + ("    " if is_last else "│   ")
-            child_iter = model.iter_children(iter_pos)
-            n_children = model.iter_n_children(iter_pos)
-            
-            for i in range(n_children):
-                child_lines = iter_to_text(model, child_iter, new_prefix, i == n_children - 1)
-                lines.extend(child_lines)
-                child_iter = model.iter_next(child_iter)
+            # Only process children if this node is expanded
+            if is_expanded:
+                new_prefix = prefix + ("    " if is_last else "│   ")
+                child_iter = model.iter_children(iter_pos)
+                n_children = model.iter_n_children(iter_pos)
+                
+                for i in range(n_children):
+                    child_lines = iter_to_text(model, child_iter, new_prefix, i == n_children - 1)
+                    lines.extend(child_lines)
+                    child_iter = model.iter_next(child_iter)
             
             return lines
         
+        # Build header
         header = f"Parent Directory: {os.path.basename(self.current_path)}\n"
         header += f"Full Path: {self.current_path}\n"
         header += f"Max Depth: {self.max_depth}\n"
@@ -706,6 +718,7 @@ class TreeTab:
         
         header += "\n" + "=" * 80 + "\n\n"
         
+        # Build tree - only expanded nodes will be included
         root_lines = []
         root_iter = self.tree_store.get_iter_first()
         while root_iter:

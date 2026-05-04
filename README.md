@@ -1,8 +1,6 @@
 # GTK Directory Tree Viewer (pystruct)
 
-**pystruct** is a cross-platform Python GTK3 application for generating, viewing, and copying ASCII-style directory trees. It features multi-tab support, file content preview, full-width row highlighting, and a classic tree view with `├──`, `└──`, and `│` connectors – perfect for developers, sysadmins, and anyone who needs a quick textual overview of a file hierarchy.
-
-![Main widget with options](media/screenshot.png)
+**pystruct** is a Python-based GTK3 application that allows you to visually browse and generate ASCII-style directory trees. Designed for system administrators, developers, and anyone who wants a clear textual representation of a file hierarchy.
 
 ---
 
@@ -13,10 +11,10 @@
 - **ASCII directory tree** with `├──`, `└──`, and `│` connectors in the GUI.
 - **File content preview** – click any file to view its contents in a bottom panel.
 - **Copy selected file content** to clipboard.
-- **Copy entire ASCII tree** to clipboard.
+- **Copy entire ASCII tree** to clipboard (respects collapsed/expanded state).
 - **Configurable max depth** (1-10) to limit tree expansion.
 - **Show/hide hidden files** (overrides ignore patterns).
-- **Show permissions** (Unix-style `rwxr-xr-x`) and **show groups** (owner:group).
+- **Show permissions** (Unix-style `rwxr-xr-x`) and **show groups** (owner:group) on Linux/macOS.
 - **Ignore rules editor** – edit built-in Python-centric patterns (`.venv/`, `__pycache__/`, etc.) via a dialog.
 
 ### Multi-Tab Management
@@ -28,13 +26,8 @@
 
 ### Cross-Platform Support
 - **Runs on Linux, macOS, and Windows** with identical functionality.
-- **Platform detection system** automatically enables/disables platform-specific features.
-- **Cross-platform hidden file detection**:
-  - Windows: Uses native `GetFileAttributesW` API
-  - macOS: Checks dot-files and BSD hidden flags
-  - Linux: Standard dot-file detection
+- **Platform detection** automatically disables unsupported features (Permissions/Groups on Windows).
 - **Theme-aware styling** respects system GTK themes on all platforms.
-- **Cross-platform clipboard** operations work consistently.
 
 ### User Interface
 - **Full-width row highlighting** using your system's native GTK theme colors.
@@ -51,151 +44,103 @@
 - PyGObject (GTK3)
 - System GTK3 libraries
 
-### Platform-Specific Installation
+### Installing Dependencies
 
-**Linux (Debian/Ubuntu):**
-```bash
-sudo apt install python3-gi python3-gi-cairo gir1.2-gtk-3.0
-pip install PyGObject
-```
+Use a virtual environment and install PyGObject:
 
-**Linux (Fedora/RHEL):**
-```bash
-sudo dnf install python3-gobject gtk3
-pip install PyGObject
-```
+    # Activate your virtual environment first
+    pip install PyGObject
 
-**macOS:**
-```bash
-brew install gtk+3 py3cairo pygobject3
-pip install PyGObject
-```
+    # System packages (example for Ubuntu/Debian)
+    sudo apt-get install gir1.2-gtk-3.0
 
-**Windows (MSYS2):**
-```bash
-pacman -S mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject
-pip install PyGObject
-```
+    # Fedora
+    sudo dnf install gtk3
+
+    # Arch Linux
+    sudo pacman -S gtk3
 
 ---
 
-## Installation & Running
+## Running the Application
 
-```bash
-# Clone the repository
-git clone https://github.com/mreinrt/pystruct.git
-cd pystruct
-
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run
-python pystruct.py
-```
+    # Make sure you are in a virtual environment
+    python pystruct.py
 
 ---
 
-## Usage Guide
+## Usage
 
-### Basic Workflow
-1. Select a directory using the file chooser or type the path.
-2. Configure options:
-   - Hidden Files – show/hide hidden files/directories
-   - Permissions – show Unix file permissions (Linux/macOS only)
-   - Groups – show owner and group info (Linux/macOS only)
-   - Max Depth – limit tree expansion depth
-3. Click **Generate** to build the tree.
-4. **Browse** – click files to preview contents, double-click directories to expand/collapse.
-5. **Copy** – use `Copy Selected File` or `Copy Tree` buttons.
+1. **Select a directory**: Use the text entry or click **Browse**.
+2. **Set options**:
+   - Toggle **Hidden Files** to show/hide hidden files/directories
+   - Toggle **Permissions** (Linux/macOS only)
+   - Toggle **Groups** (Linux/macOS only)
+   - Adjust **Max Depth** to limit tree expansion
+3. **Generate tree**: Click **Generate Tree**.
+4. **Copy tree**: Click **Copy Tree** to copy ASCII tree text.
+5. **Copy file content**: Click any file, then click **Copy Selected File**.
+6. **Refresh**: Click **Refresh** to reload the current tab's tree.
 
-### Multi-Tab Workflow
-- Click **"+"** to create a new tab for a different directory.
-- Click any tab to switch between different directory views.
-- Click **"X"** on a tab to close it (cannot close the last tab).
-- Each tab maintains independent settings and tree views.
-
-### Refresh
-- Click **Refresh** to reload the current tab's directory tree.
-
-### About Dialog
-- Click **About** to view project information and donation addresses.
-
-### Ignore Rules
-- Click **Ignore Rules** to edit patterns like `__pycache__/`, `.venv/`, `*.pyc`.
+The status bar will provide feedback, including errors and success messages.
 
 ---
 
 ## Key Implementation Details
 
-- **Gtk.TreeView with TreeStore** for efficient tree rendering
-- **ASCII export** preserves connector alignment
-- **Multi-encoding preview** (UTF-8 → Latin-1 → CP1252)
-- **Recursive ignore system** with `.gitignore`-style matching
-- **Dynamic GTK CSS theming**
-- **Platform detection layer**
+- **Gtk.TreeView with TreeStore** – Efficient tree rendering with native full-row highlighting and selection.
+- **Gtk.Paned split view** – Resizable divider between directory tree (top) and file preview (bottom).
+- **Custom browser-style tabs** – Traditional tab interface using Gtk.EventBox for independent click handling...
+- **Gtk.Stack** – Manages tab content switching with smooth crossfade transitions.
+- **ASCII pipe connectors** – Visual tree lines (`├──`, `└──`, `│`) are stored as prefixes in the TreeStore and combined with cell data functions.
+- **Platform detection** – Automatically detects Linux, macOS, or Windows and disables unsupported features (Permissions/Groups on Windows).
+- **Cross-platform hidden file detection** – Windows uses `GetFileAttributesW` API; macOS checks dot-files and BSD hidden flags; Linux uses standard dot-file detection.
+- **Theme-aware CSS** – Uses GTK theme variables (`@theme_selected_bg_color`) instead of hardcoded colors, respecting system themes across all platforms.
+- **Recursive tree generation** – Stops at `max_depth` and respects collapse/expand state for WYSIWYG copying.
+- **Multi-encoding file preview** – Attempts UTF-8, Latin-1, and CP1252 fallbacks for text files; displays "[Binary file - cannot display content]" for binaries.
+- **Gitignore-style ignore patterns** – Supports pattern matching (e.g., `*.pyc`, `__pycache__/`, `.venv/`) with an editable ignore rules dialog.
+- **Clipboard integration** – Cross-platform clipboard support using `Gtk.Clipboard` for copying tree output and file contents.
+- **Graceful error handling** – Permission errors show `[Permission Denied]` in the tree; file read errors display descriptive messages in the preview panel.
 
 ---
 
 ## Project Structure
 
-```text
-pystruct/
-├── pystruct.py
-├── requirements.txt
-├── CHANGELOG.md
-├── LICENSE
-├── README.md
-└── media/
-    ├── screenshot.png
-    ├── tree_view.png
-    ├── file_preview.png
-    └── ignore_rules.png
-```
+    pystruct.py   # Main application script
+
+- All logic is contained in a single Python file for portability.
+- No external configuration files are required.
 
 ---
 
-## Development & Contributing
+## Notes
 
-```bash
-git checkout -b feature/amazing
-git commit -m "Add amazing feature"
-git push origin feature/amazing
-```
+- Tested on Linux systems with GTK3 support.
+- Virtual environment recommended for dependency isolation.
+- The app is designed for local file browsing; no network file access is implemented.
+- Exception handling included for permission issues, missing directories, and clipboard failures.
 
 ---
 
 ## License
 
-MIT License – see [LICENSE](LICENSE)
+MIT License — free to use, modify, and distribute.
 
 ---
 
-## Acknowledgements
+## Contact / Support
 
-- GTK3 / PyGObject team
-- Python ecosystem
-
----
+For issues or suggestions, please open an issue in the repository or contact the maintainer directly.
 
 ## About the Developer
 
-Created by **Mike Reinert (BigSlimThic)**.
-
----
+Created by **Mike Reinert (BigSlimThic)** – a self-taught developer who built this tool despite facing extraordinary challenges, including homelessness and living without basic utilities. Every line of code was written against the odds. This project is dedicated to everyone fighting for a better life.
 
 ## Donate
 
-**Bitcoin (BTC):** `3GtCgHhMP7NTxsdNjcDs7TUNSBK6EXoAzz`  
-**Ethereum (ETH):** `0x5f1ed610a96c648478a775644c9244bf4e78631e`
+Donate to BigSlimThic: Help fund his lifelong quest to buy an ergonomic chair, 
+a better Wi-Fi router, and possibly a vacation somewhere that isn't just his imagination.
 
----
+BTC: 3GtCgHhMP7NTxsdNjcDs7TUNSBK6EXoAzz
 
-## Links
-
-- Repository: https://github.com/mreinrt/pystruct
-- Issues: https://github.com/mreinrt/pystruct/issues
-- Changelog: [CHANGELOG.md](CHANGELOG.md)
+ETH: 0x5f1ed610a96c648478a775644c9244bf4e78631e
